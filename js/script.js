@@ -43,38 +43,40 @@ var quotes = [
     source: "Vincent Van Gogh"
   }
 ];
-// copy the array over to a 2nd array thats used to check for unique values
-var quotesCopy = quotes.slice();
+// get the length of the quotes array
+var counter = quotes.length;
 
-// first 5 times, returns a unique value >> then it will return any value
+/* This function produces a random object, removes it from the
+array with splice, pushes back in to the back with push,
+and then decrements the counter and returns the object.
+This way it will only be pulling random index values for the
+elements that have yet to potentially be drawn. So no repeats.
+Then when it gets to 0, it resets the counter to start over. */
 function getRandomQuote( arr ){
 
-  // create a random number 1-4 for the index
-  var index = Math.floor(Math.random() * arr.length);
-
-  // if the copy array was already exhausted in the first round, refill it
-  if(quotesCopy.length === 0) {
-    quotesCopy = quotes.slice();
-  }
-
-  // checks if the copy array still has values in it
-  if(quotesCopy.length > 0) {
-    // if it does, creates and assigns the object at that index to a var
-    // but this object may not exist in the array if it was already spliced out
-    var quotesCopyObj = quotesCopy[index];
-
-    // so while the object is not in the array, keep looping and building a new random object
-    while( quotesCopy.indexOf(quotesCopyObj) === -1){
-      index = Math.floor(Math.random() * arr.length);
-      quotesCopyObj = quotesCopy[index];
+  // flag that will reset the counter after each
+  // complete iteration of the quotes array
+    if( counter === 0 ) {
+      counter = 5;
     }
 
-    // if we got here, we broke out of the loop because we have found a random object
-    // that was still in the copy array
-    var quote = quotesCopy.splice(index, 1); // so lets slice it out
-    return quote[0]; // and return it to get printed
-  }
+    // generates a random number only up to the counter length
+    var index = Math.floor(Math.random() * counter);
 
+    // creates an instance of the quote that was randomly selected
+    var randomQuote = quotes[index];
+
+    // splice will remove this quote from the array
+    quotes.splice(index, 1);
+
+    // push will tack it back on to the end of the array
+    quotes.push(randomQuote);
+
+    // we then decrement the counter
+    counter--;
+
+    // then print the random quote
+    return randomQuote;
 }
 
 function printQuote() { // this will print the quote to the page
