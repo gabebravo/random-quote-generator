@@ -8,7 +8,7 @@ document.getElementById('loadQuote').addEventListener("click", printQuote, false
   setInterval(function(){
     printQuote();
   }, 20000);
-
+// load up the initial random quote the firs time
   window.onload = function() {
     printQuote();
   };
@@ -48,8 +48,14 @@ var quotesCopy = quotes.slice();
 
 // first 5 times, returns a unique value >> then it will return any value
 function getRandomQuote( arr ){
+
   // create a random number 1-4 for the index
   var index = Math.floor(Math.random() * arr.length);
+
+  // if the copy array was already exhausted in the first round, refill it
+  if(quotesCopy.length === 0) {
+    quotesCopy = quotes.slice();
+  }
 
   // checks if the copy array still has values in it
   if(quotesCopy.length > 0) {
@@ -67,9 +73,6 @@ function getRandomQuote( arr ){
     // that was still in the copy array
     var quote = quotesCopy.splice(index, 1); // so lets slice it out
     return quote[0]; // and return it to get printed
-  }
-  else { // if you got here the first round of non-repeating quote objects were exhausted
-    return quotes[index]; // so just print whatever quote comes up random or not
   }
 
 }
