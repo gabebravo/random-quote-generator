@@ -1,4 +1,5 @@
 // Gabe Bravo - 01/31/2017 - JS Random Quote Generator
+'use strict';
 
 // event listener to respond to "Show another quote" button clicks
 // when user clicks anywhere on the button, the "printQuote" function is called
@@ -57,7 +58,7 @@ function getRandomQuote( arr ){
   // flag that will reset the counter after each
   // complete iteration of the quotes array
     if( counter === 0 ) {
-      counter = 5;
+      counter = quotes.length;
     }
 
     // generates a random number only up to the counter length
