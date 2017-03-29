@@ -44,7 +44,13 @@ const generateQuotes = () => {
       printQuote(nextQuote);
   }
 }
-// event listers
+
+// global event handles qoute timeout
+setInterval(function(){
+    generateQuotes();
+  }, 20000);
+
+// event listeners
 $(window).on('load', generateQuotes);
 $('#loadQuote').on('click', generateQuotes);
 
