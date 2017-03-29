@@ -1,21 +1,7 @@
-// Gabe Bravo - 01/31/2017 - JS Random Quote Generator
-'use strict';
+// Gabe Bravo - 03/29/2017 - JS Random Quote Generator
 
-// event listener to respond to "Show another quote" button clicks
-// when user clicks anywhere on the button, the "printQuote" function is called
-document.getElementById('loadQuote').addEventListener("click", printQuote, false);
-
-// this will automatically change the qoute every 20 seconds
-  setInterval(function(){
-    printQuote();
-  }, 20000);
-// load up the initial random quote the firs time
-  window.onload = function() {
-    printQuote();
-  };
-
-// this is my qoutes array filled with objects
-var quotes = [
+// decalre global constants
+const quotes = [
   {
     quote: "Once you replace negative thoughts with positive ones, you'll start having positive results.",
     source: "Willie Nelson",
@@ -44,58 +30,52 @@ var quotes = [
     source: "Vincent Van Gogh"
   }
 ];
-// get the length of the quotes array
-var counter = quotes.length;
+const counter = 5;
+let currentQuoteSet = []; // decalre global array container for qoutes
 
-/* This function produces a random object, removes it from the
-array with splice, pushes back in to the back with push,
-and then decrements the counter and returns the object.
-This way it will only be pulling random index values for the
-elements that have yet to potentially be drawn. So no repeats.
-Then when it gets to 0, it resets the counter to start over. */
-function getRandomQuote( arr ){
+// checks if qoutes array is emepty, refills if so, subsequently pops and prints
+const generateQuotes = () => {
+  if(currentQuoteSet.length === 0) {
+      currentQuoteSet = getSetOfQuotes(quotes);
+      let firstQuote = currentQuoteSet.pop();
+      printQuote(firstQuote);
+  } else {
+      let nextQuote = currentQuoteSet.pop();
+      printQuote(nextQuote);
+  }
+}
+// event listers
+$(window).on('load', generateQuotes);
+$('#loadQuote').on('click', generateQuotes);
 
-  // flag that will reset the counter after each
-  // complete iteration of the quotes array
-    if( counter === 0 ) {
-      counter = quotes.length;
-    }
+// uses ES6 to generate a set of unique, yet random qoutes
+const getSetOfQuotes = arr => {
+// instantiate new set
+  let set = new Set();
 
-    // generates a random number only up to the counter length
-    var index = Math.floor(Math.random() * counter);
-
-    // creates an instance of the quote that was randomly selected
-    var randomQuote = quotes[index];
-
-    // splice will remove this quote from the array
-    quotes.splice(index, 1);
-
-    // push will tack it back on to the end of the array
-    quotes.push(randomQuote);
-
-    // we then decrement the counter
-    counter--;
-
-    // then print the random quote
-    return randomQuote;
+// loop over the set until we get 5 non-repeating quotes
+  while( set.size < 5 ) {
+    let index = Math.floor(Math.random() * counter);
+    set.add(arr[index]);
+  }
+// convert the set to an arry and return it
+  return [...set];
 }
 
-function printQuote() { // this will print the quote to the page
-  var quoteObj = getRandomQuote(quotes);
-  var quoteTemplate = '';
-      quoteTemplate += '<p class="quote">' + quoteObj.quote + '</p>';
-      quoteTemplate += '<p class="source">' + quoteObj.source;
+// uses string template to print out the individual qoutes
+const printQuote = quoteObj => {
+  let quoteTemplate = `<p class="quote">${quoteObj.quote}</p><p class="source">${quoteObj.source}`;
         if ( quoteObj.citation )
-          quoteTemplate += '<span class="citation">'+ quoteObj.citation +'</span>';
+          quoteTemplate += `<span class="citation">${quoteObj.citation}</span>`;
         if ( quoteObj.year )
-          quoteTemplate += '<span class="year">'+ quoteObj.year +'</span>';
+          quoteTemplate += `<span class="year">${quoteObj.year}</span>`;
         if ( quoteObj.tags )
-          quoteTemplate += '<br><span class="tags">'+ quoteObj.tags +'</span>';
-      quoteTemplate += '</p>';
+          quoteTemplate += `<br><span class="tags">${quoteObj.tags}</span>`;
+      quoteTemplate += `</p>`;
 
-// generate our random BG color every time and prints the quote
-  document.body.style.backgroundColor = generateRandomBackground();
-  document.getElementById('quote-box').innerHTML = quoteTemplate;
+// generates the random BG color every time a quote is printed
+  $('body').css('background-color', generateRandomBackground());
+  $('#quote-box').html(quoteTemplate);
 }
 
 // this creates random RGB values for the body backgroundColor
